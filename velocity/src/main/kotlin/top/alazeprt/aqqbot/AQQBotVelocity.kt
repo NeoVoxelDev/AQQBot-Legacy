@@ -111,6 +111,7 @@ class AQQBotVelocity : AQQBot {
 
     @Subscribe
     fun onProxyShutdown(event: ProxyShutdownEvent) {
+        executor.shutdown()
         this.disable()
     }
 

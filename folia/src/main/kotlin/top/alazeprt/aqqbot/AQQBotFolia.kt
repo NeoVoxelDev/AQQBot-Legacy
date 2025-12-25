@@ -76,8 +76,6 @@ class AQQBotFolia : JavaPlugin(), AQQBot {
 
     override var loadSparkCount: Int = 0
 
-    val taskList: MutableList<FoliaTaskCancelable> = mutableListOf()
-
     companion object {
         lateinit var audience: BukkitAudiences
     }
@@ -97,9 +95,8 @@ class AQQBotFolia : JavaPlugin(), AQQBot {
 
     override fun onDisable() {
         log(LogLevel.INFO , "Canceling task")
-        taskList.forEach {
-            it.cancel()
-        }
+        Bukkit.getAsyncScheduler().cancelTasks(this)
+        Bukkit.getGlobalRegionScheduler().cancelTasks(this)
         this.disable()
         audience.close()
     }
@@ -148,7 +145,6 @@ class AQQBotFolia : JavaPlugin(), AQQBot {
             task.run()
         }
         val cancelable = FoliaTaskCancelable(this)
-        taskList.add(cancelable)
         return cancelable
     }
 
@@ -157,28 +153,24 @@ class AQQBotFolia : JavaPlugin(), AQQBot {
             task.run()
         }
         val cancelable = FoliaTaskCancelable(this)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitLater(delay: Long, task: Runnable): Cancelable {
         server.globalRegionScheduler.runDelayed(this, { task.run() }, delay)
         val cancelable = FoliaTaskCancelable(this)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitLaterAsync(delay: Long, task: Runnable): Cancelable {
         server.asyncScheduler.runDelayed(this, { task.run() }, delay * 50L, TimeUnit.MILLISECONDS)
         val cancelable = FoliaTaskCancelable(this)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitTimer(delay: Long, period: Long, task: Runnable): Cancelable {
         server.globalRegionScheduler.runAtFixedRate(this, { task.run() }, delay, period)
         val cancelable = FoliaTaskCancelable(this)
-        taskList.add(cancelable)
         return cancelable
     }
 
@@ -186,7 +178,6 @@ class AQQBotFolia : JavaPlugin(), AQQBot {
         server.asyncScheduler.runAtFixedRate(this, { task.run() }, delay * 50L, period * 50L,
             TimeUnit.MILLISECONDS)
         val cancelable = FoliaTaskCancelable(this)
-        taskList.add(cancelable)
         return cancelable
     }
 

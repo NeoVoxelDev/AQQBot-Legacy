@@ -1,80 +1,75 @@
 package top.alazeprt.aqqbot.adapter
 
 import top.alazeprt.aqqbot.util.Cancelable
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.Executors
 
 object FabricScheduler {
 
-    private val taskList: MutableList<FabricCancelable> = mutableListOf()
+    private val taskList: MutableList<FabricCancelable> = CopyOnWriteArrayList()
+
+    private val executor = Executors.newScheduledThreadPool(16)
+
 
     fun runTask(task: Runnable): Cancelable {
-        task.run()
-        return object : Cancelable {
-            override fun cancel() {}
-        }
+        val cancelable = FabricCancelable(task, System.currentTimeMillis(), -1)
+        taskList.add(cancelable)
+        return cancelable
     }
 
     fun runTaskAsync(task: Runnable): Cancelable {
-        val thread = Thread(task)
-        thread.start()
-        val cancelable = FabricCancelable(thread)
-        taskList.add(cancelable)
-        return cancelable
+        val future = executor.submit(task)
+        return object : Cancelable {
+            override fun cancel() {
+                future.cancel(true)
+            }
+        }
     }
 
     fun runTaskLater(task: Runnable, delay: Long): Cancelable {
-        Thread.sleep(50 * delay)
-        task.run()
-        return object : Cancelable {
-            override fun cancel() {}
-        }
-    }
-
-    fun runTaskLaterAsync(task: Runnable, delay: Long): Cancelable {
-        val thread = Thread {
-            Thread.sleep(50 * delay)
-            task.run()
-        }
-        thread.start()
-        val cancelable = FabricCancelable(thread)
+        val cancelable = FabricCancelable(task, System.currentTimeMillis() + delay * 50L, -1)
         taskList.add(cancelable)
         return cancelable
+    }
+
+    fun runTaskLaterAsync(delay: Long, task: Runnable): Cancelable {
+        val future = executor.schedule(task, delay * 50L, java.util.concurrent.TimeUnit.MILLISECONDS)
+        return object : Cancelable {
+            override fun cancel() {
+                future.cancel(true)
+            }
+        }
     }
 
     fun runTaskTimer(task: Runnable, delay: Long, period: Long): Cancelable {
-        Thread.sleep(50 * delay)
-        while (true) {
-            try {
-                task.run()
-                Thread.sleep(50 * period)
-            } catch (e: InterruptedException) {
-                break
-            }
-        }
-        return object : Cancelable {
-            override fun cancel() {}
-        }
-    }
-
-    fun runTaskTimerAsync(task: Runnable, delay: Long, period: Long): Cancelable {
-        val thread = Thread {
-            Thread.sleep(50 * delay)
-            while (!Thread.interrupted()) {
-                try {
-                    task.run()
-                    Thread.sleep(50 * period)
-                } catch (e: InterruptedException) {
-                    break
-                }
-            }
-        }
-        thread.start()
-        val cancelable = FabricCancelable(thread)
+        val cancelable = FabricCancelable(task, System.currentTimeMillis() + delay * 50L, period * 50L)
         taskList.add(cancelable)
         return cancelable
     }
 
+    fun runTaskTimerAsync(delay: Long, period: Long, task: Runnable): Cancelable {
+        val future = executor.scheduleAtFixedRate(task, delay * 50L, period * 50L, java.util.concurrent.TimeUnit.MILLISECONDS)
+        return object : Cancelable {
+            override fun cancel() {
+                future.cancel(true)
+            }
+        }
+    }
+
     fun cancelAllTasks() {
+        executor.shutdown()
         taskList.forEach { it.cancel() }
         taskList.clear()
+    }
+
+    fun submitTaskToMainThread() {
+        val toRemove = mutableListOf<FabricCancelable>()
+        taskList.forEach {
+            it.run()
+            if (it.nextRunTime == -1L)  {
+                toRemove.add(it)
+            }
+        }
+        taskList.removeAll(toRemove)
     }
 }

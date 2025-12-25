@@ -76,8 +76,6 @@ class AQQBotBukkit : JavaPlugin(), AQQBot {
 
     override lateinit var scriptLoader: ScriptLoader
 
-    val taskList: MutableList<BukkitTaskCancelable> = mutableListOf()
-
     companion object {
         lateinit var audience: BukkitAudiences
     }
@@ -100,9 +98,7 @@ class AQQBotBukkit : JavaPlugin(), AQQBot {
 
     override fun onDisable() {
         log(LogLevel.INFO , "Canceling task")
-        taskList.forEach {
-            it.cancel()
-        }
+        Bukkit.getScheduler().cancelTasks(this)
         this.disable()
         audience.close()
     }
@@ -187,42 +183,36 @@ class AQQBotBukkit : JavaPlugin(), AQQBot {
     override fun submit(task: Runnable): Cancelable {
         val newTask = Bukkit.getScheduler().runTask(this, task)
         val cancelable = BukkitTaskCancelable(newTask)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitAsync(task: Runnable): Cancelable {
         val newTask = Bukkit.getScheduler().runTaskAsynchronously(this, task)
         val cancelable = BukkitTaskCancelable(newTask)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitLater(delay: Long, task: Runnable): Cancelable {
         val newTask = Bukkit.getScheduler().runTaskLater(this, task, delay)
         val cancelable = BukkitTaskCancelable(newTask)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitLaterAsync(delay: Long, task: Runnable): Cancelable {
         val newTask = Bukkit.getScheduler().runTaskLaterAsynchronously(this, task, delay)
         val cancelable = BukkitTaskCancelable(newTask)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitTimer(delay: Long, period: Long, task: Runnable): Cancelable {
         val newTask = Bukkit.getScheduler().runTaskTimer(this, task, delay, period)
         val cancelable = BukkitTaskCancelable(newTask)
-        taskList.add(cancelable)
         return cancelable
     }
 
     override fun submitTimerAsync(delay: Long, period: Long, task: Runnable): Cancelable {
         val newTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, task, delay, period)
         val cancelable = BukkitTaskCancelable(newTask)
-        taskList.add(cancelable)
         return cancelable
     }
 
