@@ -9,6 +9,7 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.loader.api.FabricLoader
@@ -71,6 +72,9 @@ class AQQBotFabric : ModInitializer, AQQBot {
                 ADeathEvent(this, FabricPlayer(player), source.name).handle()
             }
             true
+        }
+        ServerTickEvents.END_SERVER_TICK.register {
+            FabricScheduler.submitTaskToMainThread()
         }
         try {
             Class.forName("eu.pb4.placeholders.api.Placeholders")

@@ -32,7 +32,7 @@ object FabricScheduler {
         return cancelable
     }
 
-    fun runTaskLaterAsync(delay: Long, task: Runnable): Cancelable {
+    fun runTaskLaterAsync(task: Runnable, delay: Long): Cancelable {
         val future = executor.schedule(task, delay * 50L, java.util.concurrent.TimeUnit.MILLISECONDS)
         return object : Cancelable {
             override fun cancel() {
@@ -47,7 +47,7 @@ object FabricScheduler {
         return cancelable
     }
 
-    fun runTaskTimerAsync(delay: Long, period: Long, task: Runnable): Cancelable {
+    fun runTaskTimerAsync(task: Runnable, delay: Long, period: Long): Cancelable {
         val future = executor.scheduleAtFixedRate(task, delay * 50L, period * 50L, java.util.concurrent.TimeUnit.MILLISECONDS)
         return object : Cancelable {
             override fun cancel() {

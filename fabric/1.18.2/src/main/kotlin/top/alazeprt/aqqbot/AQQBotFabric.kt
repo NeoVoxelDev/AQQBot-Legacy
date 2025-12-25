@@ -8,6 +8,7 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.kyori.adventure.platform.fabric.FabricServerAudiences
@@ -15,6 +16,7 @@ import net.kyori.adventure.text.TextComponent
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.CommandManager
 import net.minecraft.text.Text
+import net.minecraft.world.WorldEvents
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import top.alazeprt.aconfiguration.file.FileConfiguration
@@ -64,6 +66,9 @@ class AQQBotFabric : ModInitializer, AQQBot {
         ServerPlayerEvents.ALLOW_DEATH.register { player, source, _ ->
             ADeathEvent(this, FabricPlayer(player), source.name).handle()
             true
+        }
+        ServerTickEvents.END_SERVER_TICK.register {
+            FabricScheduler.submitTaskToMainThread()
         }
         try {
             Class.forName("eu.pb4.placeholders.PlaceholderAPI")
