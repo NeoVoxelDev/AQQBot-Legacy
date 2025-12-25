@@ -18,5 +18,9 @@
   },
   "mixins": [
     "aqqbot.mixins.json"
+  ],
+  "authors": [
+    "alazeprt",
+    "NeoVoxelDev Team"
   ]
 }

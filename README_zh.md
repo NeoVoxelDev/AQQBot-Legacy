@@ -1,6 +1,8 @@
 # AQQBot
 
-[ENGLISH](https://github.com/alazeprt/AQQBot/blob/refactor/README.md) | 简体中文
+**警告: 该项目不会再有新更新, 仅会有 bug 和安全问题修复, 若要获取新功能, 请见 [NeoBot](https://github.com/NeoVoxelDev/NeoBot)**
+
+[English](https://github.com/alazeprt/AQQBot/blob/refactor/README.md) | 简体中文
 
 ---
 

@@ -15,6 +15,7 @@ repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://repo.opencollab.dev/main/")
+    maven("https://repo.minebench.de/")
     mavenCentral()
 }
 
@@ -24,7 +25,7 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bungeecord:4.4.1")
     implementation("com.alessiodp.libby:libby-bungee:2.0.0-SNAPSHOT")
     implementation("org.bstats:bstats-bungeecord:3.0.2")
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT")
     compileOnly("me.lucko:spark-api:0.1-SNAPSHOT")
     compileOnly(fileTree("libs"))
 }

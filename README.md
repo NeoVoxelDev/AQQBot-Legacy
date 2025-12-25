@@ -1,5 +1,8 @@
 # AQQBot
-ENGLISH | [简体中文](https://github.com/alazeprt/AQQBot/blob/master/README_zh.md)
+English | [简体中文](https://github.com/alazeprt/AQQBot/blob/master/README_zh.md)
+
+**Warning: This project will no longer receive new updates, only bug and security fixes. To access new features, please migrate to [NeoBot](https://github.com/NeoVoxelDev/NeoBot).**
+
 ## Description
 
 AQQBot is a plugin for interconnecting QQ groups and servers based on the Onebot v11 protocol, which allows users to perform many operations through QQ groups (e.g., binding game accounts, querying server status).

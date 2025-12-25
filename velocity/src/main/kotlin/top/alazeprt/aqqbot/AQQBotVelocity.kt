@@ -42,7 +42,7 @@ import java.util.concurrent.Executors
 import kotlin.io.resolve
 
 
-@Plugin(id = "aqqbot", name = "AQQBot", version = "2.0-alpha.13", url = "https://aqqbot.alazeprt.top", authors = ["alazeprt"])
+@Plugin(id = "aqqbot", name = "AQQBot", version = "2.0-alpha.13", url = "https://aqqbot.alazeprt.top", authors = ["alazeprt", "NeoVoxelDev Team"])
 class AQQBotVelocity : AQQBot {
     override var debugModule: ADebug? = null
 
